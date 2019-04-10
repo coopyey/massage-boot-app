@@ -26,6 +26,17 @@ doc/api/
 *.js.map
 
 ### Flutter ###
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
 # Flutter/Dart/Pub related
 **/doc/api/
 .flutter-plugins
