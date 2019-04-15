@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import './sequence.dart';
 
 void main() => runApp(MyApp());
 
@@ -86,8 +87,24 @@ class _BluetoothAppState extends State<BluetoothApp> {
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("Flutter Bluetooth"),
+          title: Text("Massage Boot Control"), //app title
           backgroundColor: Colors.deepPurple,
+        ),
+        //Menu for navigating pages
+        drawer: new Drawer( 
+          child: ListView(
+            children: <Widget>[
+              //Sequence Selection
+              new ListTile (
+                title: new Text ('Sequence Selection'),
+                onTap: () {
+                  Navigator.push(context, new MaterialPageRoute(
+                    builder: (BuildContext context) => new SequenceSelection())
+                  );
+                },
+              ),
+            ],
+          ),
         ),
         body: Container(
           child: Column(
