@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 
+enum Sequencing {off, one, two, three}
+
 class SequenceSelection extends StatefulWidget {
   @override
   _SequenceSelection createState() => new _SequenceSelection();
 }
 
 class _SequenceSelection extends State<SequenceSelection> {
-  bool val1 = false;
-  bool val2 = false;
-  bool val3 = false;
-
-  void _change1(bool value) => setState(() => val1 = value);
-  void _change2(bool value) => setState(() => val2 = value);
-  void _change3(bool value) => setState(() => val3 = value);
+  Sequencing _sequence = Sequencing.off; //Starts off by default
   
   @override
   Widget build(BuildContext context) {
@@ -28,30 +24,42 @@ class _SequenceSelection extends State<SequenceSelection> {
           child: new Column(
             //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+              //Sequence 0 block
+              new RadioListTile<Sequencing>(
+                title: const Text('Off'),
+                value: Sequencing.off,
+                groupValue: _sequence,
+                onChanged: (Sequencing value) => setState(() => _sequence = value),
+                activeColor: Colors.deepPurple,
+              ),
+              new Text("Causes system to turn off and air bladders to deflate."),
               //Sequence 1 block
-              new SwitchListTile(
-                value: val1,
-                onChanged: _change1,
-                title: new Text("Sequence 1", style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                activeTrackColor: Colors.deepPurpleAccent[100],
+              new RadioListTile<Sequencing>(
+                title: const Text('Sequence 1'),
+                value: Sequencing.one,
+                groupValue: _sequence,
+                onChanged: (Sequencing value) => setState(() => _sequence = value),
                 activeColor: Colors.deepPurple,
               ),
+              new Text("Explanation of what sequence one does."),
               //Sequence 2 block
-              new SwitchListTile(
-                value: val2,
-                onChanged: _change2,
-                title: new Text("Sequence 2", style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                activeTrackColor: Colors.deepPurpleAccent[100],
+             new RadioListTile<Sequencing>(
+                title: const Text('Sequence 2'),
+                value: Sequencing.two,
+                groupValue: _sequence,
+                onChanged: (Sequencing value) => setState(() => _sequence = value),
                 activeColor: Colors.deepPurple,
               ),
+              new Text("Explanation of what sequence two does."),
               //Sequence 3 block
-              new SwitchListTile(
-                value: val3,
-                onChanged: _change3,
-                title: new Text("Sequence 3", style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                activeTrackColor: Colors.deepPurpleAccent[100],
+              new RadioListTile<Sequencing>(
+                title: const Text('Sequence 3'),
+                value: Sequencing.three,
+                groupValue: _sequence,
+                onChanged: (Sequencing value) => setState(() => _sequence = value),
                 activeColor: Colors.deepPurple,
               ),
+              new Text("Explanation of what sequence three does."),
             ],
           ),
         ),
