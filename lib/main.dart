@@ -2,9 +2,12 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import './sequence.dart';
+//import './sequence.dart';
 
 void main() => runApp(MyApp());
+
+enum Sequencing {off, one, two, three}
+Sequencing _sequence = Sequencing.off; //Starts off by default
 
 class MyApp extends StatelessWidget { // This widget is the root of your application.
   @override
@@ -90,8 +93,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
           title: Text("Massage Boot Control"), //app title
           backgroundColor: Colors.deepPurple,
         ),
-        //Menu for navigating pages
-        drawer: new Drawer( 
+        //Menu for navigating pages - commented out for semester 1, left for example
+        /* drawer: new Drawer( 
           child: ListView(
             children: <Widget>[
               //Sequence Selection
@@ -105,9 +108,10 @@ class _BluetoothAppState extends State<BluetoothApp> {
               ),
             ],
           ),
-        ),
+        ), */
         body: Container(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Padding(
@@ -152,7 +156,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
                       children: <Widget>[
                         Expanded(
                           child: Text(
-                            "DEVICE 1",
+                            "HC-05",
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.green,
@@ -174,7 +178,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
                   ),
                 ),
               ),
-              Expanded(
+              /*Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Center(
@@ -187,7 +191,55 @@ class _BluetoothAppState extends State<BluetoothApp> {
                     ),
                   ),
                 ),
-              )
+              ) */
+              //Sequence 0 block
+              new RadioListTile<Sequencing>(
+                title: const Text('Off'),
+                value: Sequencing.off,
+                groupValue: _sequence,
+                onChanged: (Sequencing value) => setState(() /* => _sequence = value),*/ {
+                  _sequence = value;
+                  print(value.index);
+                }),
+                activeColor: Colors.deepPurple
+              ),
+              Text("Causes system to turn off and air bladders to deflate.", textAlign: TextAlign.left),
+              //Sequence 1 block
+              new RadioListTile<Sequencing>(
+                title: const Text('Sequence 1'),
+                value: Sequencing.one,
+                groupValue: _sequence,
+                onChanged: (Sequencing value) => setState(() {
+                  _sequence = value;
+                  print(value.index);
+                }),
+                activeColor: Colors.deepPurple,
+              ),
+              new Text("Runs through air bladder sequence.", textAlign: TextAlign.left),
+              //Sequence 2 block
+             new RadioListTile<Sequencing>(
+                title: const Text('Sequence 2'),
+                value: Sequencing.two,
+                groupValue: _sequence,
+                onChanged: (Sequencing value) => setState(() {
+                  _sequence = value;
+                  print(value.index);
+                }),
+                activeColor: Colors.deepPurple,
+              ),
+              new Text("Runs through vibrator sequence.", textAlign: TextAlign.left),
+              //Sequence 3 block
+              new RadioListTile<Sequencing>(
+                title: const Text('Sequence 3'),
+                value: Sequencing.three,
+                groupValue: _sequence,
+                onChanged: (Sequencing value) => setState(() {
+                  _sequence = value;
+                  print(value.index);
+                }),
+                activeColor: Colors.deepPurple,
+              ),
+              new Text("Runs through vibrator and air bladder sequence.", textAlign: TextAlign.left),
             ],
           ),
         ),

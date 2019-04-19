@@ -19,7 +19,7 @@
     <session id="-1315245686">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="7" />
+          <entry key="project.closed" value="8" />
           <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.11" value="2" />
           <entry key="project.open.time.14" value="2" />
@@ -77,10 +77,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="233" />
-    <option name="y" value="260" />
-    <option name="width" value="1752" />
-    <option name="height" value="1252" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="2497" />
+    <option name="height" value="1096" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
