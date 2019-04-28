@@ -93,7 +93,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
           title: Text("Massage Boot Control"), //app title
           backgroundColor: Colors.deepPurple,
         ),
-        //Menu for navigating pages - commented out for semester 1, left for example
+        //Menu for navigating pages - commented out for semester 1, left for example (menu)
         /* drawer: new Drawer( 
           child: ListView(
             children: <Widget>[
@@ -178,20 +178,9 @@ class _BluetoothAppState extends State<BluetoothApp> {
                   ),
                 ),
               ),
-              /*Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Center(
-                    child: Text(
-                      "NOTE: If you cannot find the device in the list, please turn on bluetooth and pair the device by going to the bluetooth settings",
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red),
-                    ),
-                  ),
-                ),
-              ) */
+              //Due to the on/off block for now I am doing index+2
+              //Sequence 0 = 2; Sequence 1 = 3; Sequence 2 = 4; Sequence 3 = 5.
+
               //Sequence 0 block
               new RadioListTile<Sequencing>(
                 title: const Text('Off'),
@@ -199,7 +188,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
                 groupValue: _sequence,
                 onChanged: (Sequencing value) => setState(() /* => _sequence = value),*/ {
                   _sequence = value;
-                  print(value.index);
+                  bluetooth.write((value.index+2).toString());
+                  show("Stopping current sequence.");
                 }),
                 activeColor: Colors.deepPurple
               ),
@@ -211,7 +201,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
                 groupValue: _sequence,
                 onChanged: (Sequencing value) => setState(() {
                   _sequence = value;
-                  print(value.index);
+                  bluetooth.write((value.index+2).toString());
+                  show("Turning on air bladders.");                  
                 }),
                 activeColor: Colors.deepPurple,
               ),
@@ -223,7 +214,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
                 groupValue: _sequence,
                 onChanged: (Sequencing value) => setState(() {
                   _sequence = value;
-                  print(value.index);
+                  bluetooth.write((value.index+2).toString());
+                  show("Turning on vibration disks.");  
                 }),
                 activeColor: Colors.deepPurple,
               ),
@@ -235,7 +227,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
                 groupValue: _sequence,
                 onChanged: (Sequencing value) => setState(() {
                   _sequence = value;
-                  print(value.index);
+                  bluetooth.write((value.index+2).toString());
+                  show("Turning on air bladders and vibration disks.");  
                 }),
                 activeColor: Colors.deepPurple,
               ),
