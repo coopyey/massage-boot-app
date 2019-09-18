@@ -30,3 +30,14 @@ class MyApp extends StatelessWidget {
     );
   }
 } 
+
+class BluetoothApp extends StatefulWidget {
+  @override
+  _BluetoothAppState createState() => _BluetoothAppState();
+}
+
+class _BluetoothAppState extends State<BluetoothApp> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  FlutterBlue bluetooth = FlutterBlue.instance;
+
+} //_BluetoothAppState
