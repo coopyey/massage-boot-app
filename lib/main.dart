@@ -8,7 +8,8 @@ import './helpers/widgets.dart';
 
 // page files
 import './pages/sequence.dart';
-//import './history.dart'; // historical data file
+//import './pages/history.dart';
+//import './pages/bluetooth.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,7 +24,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.cyan,
+        textTheme: TextTheme (
+          body1: TextStyle(fontSize: 20.0),
+          title: TextStyle(color: Colors.black),
         ),
+      ),
       home: StreamBuilder<BluetoothState>(
           stream: FlutterBlue.instance.state,
           initialData: BluetoothState.unknown,
@@ -70,17 +75,13 @@ class BluetoothOffScreen extends StatelessWidget {
   }
 }
 
-
 //Device Search
 class FindDevicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Find Devices',
-        style: TextStyle(
-          color: Colors.white,
-        )),
+        title: Text('Find Devices'),
       ),
       drawer: new Drawer(
         child: ListView(
