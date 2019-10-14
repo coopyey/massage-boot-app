@@ -9,6 +9,7 @@
 .dart_tool/
 .packages
 build/
+
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
 
@@ -86,3 +87,5 @@ doc/api/
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 # End of https://www.gitignore.io/api/dart,flutter
+
+*.dart_bak
