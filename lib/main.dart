@@ -8,7 +8,7 @@ import './helpers/widgets.dart';
 
 // page files
 import './pages/sequence.dart';
-//import './pages/history.dart';
+import './pages/history.dart';
 //import './pages/bluetooth.dart';
 
 void main() => runApp(MyApp());
@@ -87,10 +87,18 @@ class FindDevicesScreen extends StatelessWidget {
         child: ListView(
             children: <Widget>[
               new ListTile (
-                title: new Text ('Sequence Selection'),
+                title: new Text ('Sequence Selection', style: TextStyle(fontSize: 20.0)),
                 onTap: () {
                   Navigator.push(context, new MaterialPageRoute(
                     builder: (BuildContext context) => new SequenceSelection())
+                  );
+                },
+              ),
+              new ListTile ( 
+                title: new Text ('Historical Data', style: TextStyle(fontSize: 20.0)),
+                onTap: () {
+                  Navigator.push(context, new MaterialPageRoute( 
+                    builder: (BuildContext context) => new HistoryPage())
                   );
                 },
               ),

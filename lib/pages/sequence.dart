@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum Sequencing {off, ison}
+
 class SequenceSelection extends StatefulWidget {
   @override
   _SequenceSelection createState() => new _SequenceSelection();
@@ -21,7 +22,7 @@ class _SequenceSelection extends State<SequenceSelection> {
         child: new Center(
           child: new Column( 
             children: <Widget>[ 
-              // BLOCK FOR TURNING STUFF ON AND OFF ----------------------------------------------------
+              // BLOCK FOR TURNING STUFF ON AND OFF ---------------------------------------------------
               const Text('Power', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
               new Row( 
                 children: <Widget>[
@@ -52,7 +53,7 @@ class _SequenceSelection extends State<SequenceSelection> {
                   ),
                 ],
               ),
-              //BLOCK FOR THE PRESSURE SLIDER --------------------------------------------------------
+              //BLOCK FOR THE PRESSURE SLIDER ---------------------------------------------------------
               const Text('\n\nPressure Control\n', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
               new Row(
                 children: <Widget>[
@@ -73,8 +74,7 @@ class _SequenceSelection extends State<SequenceSelection> {
                   ),
                 ],
               ),
-              const Text('\nPlease note that setting the pressure to zero will result in removing all air from the boot.')
-
+              const Text('\nNote: setting the pressure to zero will result in removing all air from the boot.')
             ],
           ),
         ),
