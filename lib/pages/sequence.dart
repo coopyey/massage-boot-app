@@ -12,6 +12,7 @@ class _SequenceSelection extends State<SequenceSelection> {
   double _bootpressure = 0; //Pressure readout starts 0 by default
   double _sliderValue = 0; //Slider value 0 by default
   double _setpressure = 0; //Pressure sent to boot starts 0 by default
+  double _setrate = 0; //Heartrate value
   
   @override
   Widget build(BuildContext context) {
@@ -31,25 +32,22 @@ class _SequenceSelection extends State<SequenceSelection> {
                       title: const Text('Off'),
                       value: Sequencing.off,
                       groupValue: _sequence,
-                      onChanged: (Sequencing value) => setState(() => _sequence = value),
-                    ), // Off Radio
+                      onChanged: (Sequencing value) {
+                        setState(() => _sequence = value); //updates sequence variable
+                        //bluetooth control to send off signal should go here
+                      },
+                    ), // Off
                   ),
                   new Flexible(
                       child: new RadioListTile<Sequencing> (
                       title: const Text('On'),
                       value: Sequencing.ison,
                       groupValue: _sequence,
-                      onChanged: (Sequencing value) => setState(() => _sequence = value),
-                    ), // On Radio
-                  ),
-                ],
-              ),
-              //BLOCK FOR THE PRESSURE READOUT --------------------------------------------------------
-              const Text('\n\nCurrrent Pressure\n', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-              new Row(
-                children: <Widget>[
-                  new Flexible(
-                    child: Text('\nCurrent Pressure:    ${_setpressure.toInt()}'),
+                      onChanged: (Sequencing value) {
+                        setState(() => _sequence = value); //updates sequence variable
+                        //bluetooth control to send on signal should go here
+                      }, 
+                    ), // On
                   ),
                 ],
               ),
@@ -62,8 +60,10 @@ class _SequenceSelection extends State<SequenceSelection> {
                       min: 0.0,
                       max: 10.0,
                       onChanged: (_bootpressure) {
-                        setState(() => _sliderValue = _bootpressure);
-                        _setpressure = _bootpressure;
+                        setState(() => _sliderValue = _bootpressure); //updates
+                        _setpressure = _bootpressure; //boot pressure was going to be sent to boot after a waiting period
+                        //didn't fully implement that at the time because couldn't figure out how to at the time
+                        //bluetooth control to send value should go here
                       },
                       value: _sliderValue,
                     ),
@@ -74,7 +74,16 @@ class _SequenceSelection extends State<SequenceSelection> {
                   ),
                 ],
               ),
-              const Text('\nNote: setting the pressure to zero will result in removing all air from the boot.')
+              const Text('\nNote: setting the pressure to zero will result in removing all air from the boot.'),
+              //BLOCK FOR THE PRESSURE READOUT --------------------------------------------------------
+              const Text('\n\nCurrrent Statistics\n', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+              new Row(
+                children: <Widget>[
+                  new Flexible(
+                    child: Text('Current Pressure:    ${_setpressure.toInt()}\nCurrent Heartrate:   ${_setrate.toInt()}'),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

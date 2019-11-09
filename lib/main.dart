@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
-// helper files, code pieces that are used over and over again
+// helper files
 import './helpers/widgets.dart';
 
 // page files
-import './pages/sequence.dart';
-import './pages/history.dart';
-//import './pages/bluetooth.dart';
+import './pages/sequence.dart'; //used to control the app
+import './pages/history.dart'; //for files n such
 
 void main() => runApp(MyApp());
 
@@ -83,6 +82,7 @@ class FindDevicesScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Find Devices'),
       ),
+      //BLOCK FOR APPLICATION NAVIGATION ---------------------------------------------------------
       drawer: new Drawer(
         child: ListView(
             children: <Widget>[
