@@ -1,3 +1,3 @@
 # bootleggers_boot_app
 
-iPhone and Android app written in Flutter for a senior design project.
+Cross-platform app written in Flutter to control the hardware portion of our senior design project.
