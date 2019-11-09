@@ -98,8 +98,8 @@ class FindDevicesScreen extends StatelessWidget {
                 title: new Text ('Historical Data', style: TextStyle(fontSize: 20.0)),
                 onTap: () {
                   Navigator.push(context, new MaterialPageRoute( 
-                    builder: (BuildContext context) => new HistoryPage())
-                  );
+                    builder: (BuildContext context) => new HistoryPage(storage: CounterStorage())
+                  ));
                 },
               ),
             ],

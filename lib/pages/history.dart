@@ -5,19 +5,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-
 class CounterStorage {
+  //Finds storage directory
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
 
     return directory.path;
   }
 
+  //Finds path to a file
   Future<File> get _localFile async {
     final path = await _localPath;
     return File('$path/counter.txt');
   }
 
+  //Reads the file
   Future<int> readCounter() async {
     try {
       final file = await _localFile;
@@ -32,6 +34,7 @@ class CounterStorage {
     }
   }
 
+  //Writes to the file
   Future<File> writeCounter(int counter) async {
     final file = await _localFile;
 
@@ -40,6 +43,7 @@ class CounterStorage {
   }
 }
 
+//Creates the history page "constructor"
 class HistoryPage extends StatefulWidget {
   final CounterStorage storage;
 
@@ -49,6 +53,7 @@ class HistoryPage extends StatefulWidget {
   _HistoryPage createState() => _HistoryPage();
 }
 
+//History main
 class _HistoryPage extends State<HistoryPage> {
   int _counter;
 
