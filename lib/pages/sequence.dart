@@ -80,7 +80,7 @@ class _SequenceSelection extends State<SequenceSelection> {
               new Row(
                 children: <Widget>[
                   new Flexible(
-                    child: Text('Current Pressure:    ${_setpressure.toInt()}\nCurrent Heartrate:   ${_setrate.toInt()}'),
+                    child: Text('Current Pressure:    ${_setpressure.toInt()}\nCurrent Heart Rate:   ${_setrate.toInt()}'),
                   ),
                 ],
               ),
