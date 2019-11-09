@@ -1,26 +1,25 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-class CounterStorage {
-  //Finds storage directory
+class HistoryStorage {
+  final HistoryStorage caller;
+  HistoryStorage(this.caller);
+
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
 
     return directory.path;
   }
 
-  //Finds path to a file
   Future<File> get _localFile async {
     final path = await _localPath;
-    return File('$path/counter.txt');
+    return File('$path/history.txt');
   }
 
-  //Reads the file
-  Future<int> readCounter() async {
+  Future<int> readFile() async {
     try {
       final file = await _localFile;
 
@@ -34,62 +33,45 @@ class CounterStorage {
     }
   }
 
-  //Writes to the file
-  Future<File> writeCounter(int counter) async {
+  Future<File> writeFile(double val) async {
     final file = await _localFile;
 
     // Write the file
-    return file.writeAsString('$counter');
+    debugPrint('writing value: $val');
+    return file.writeAsString('$val');
   }
 }
 
-//Creates the history page "constructor"
 class HistoryPage extends StatefulWidget {
-  final CounterStorage storage;
+  final HistoryStorage storage;
 
-  HistoryPage ({Key key, @required this.storage}) : super(key: key);
+  HistoryPage({Key key, @required this.storage}) : super(key: key);
 
   @override
   _HistoryPage createState() => _HistoryPage();
 }
 
-//History main
 class _HistoryPage extends State<HistoryPage> {
-  int _counter;
+  int _historical;
 
   @override
   void initState() {
     super.initState();
-    widget.storage.readCounter().then((int value) {
+    widget.storage.readFile().then((int value) {
       setState(() {
-        _counter = value;
+        _historical = value;
       });
     });
-  }
-
-  Future<File> _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-
-    // Write the variable as a string to the file.
-    return widget.storage.writeCounter(_counter);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Reading and Writing Files')),
-      body: Center(
-        child: Text(
-          'Button tapped $_counter time${_counter == 1 ? '' : 's'}.',
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+      appBar: AppBar(title: Text('Historical Data')),
+      body: new Container(
+        padding: new EdgeInsets.all(32.0),
+        child: Text('Pressure reading on previous run was ${_historical}',),
+      )
     );
   }
 }
