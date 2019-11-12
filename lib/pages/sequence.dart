@@ -1,16 +1,16 @@
-import 'dart:ui' as prefix0;
-
 import 'package:flutter/material.dart';
-
 import 'history.dart';
 
 enum Sequencing {off, ison}
 
 class SequenceSelection extends StatefulWidget {
+  final String title;
+  SequenceSelection({Key key, this.title}) : super (key: key);
+  
   HistoryStorage caller;
 
   @override
-  _SequenceSelection createState() => new _SequenceSelection(caller);
+  _SequenceSelection createState() => new _SequenceSelection();
 }
 
 class _SequenceSelection extends State<SequenceSelection> {
@@ -19,9 +19,10 @@ class _SequenceSelection extends State<SequenceSelection> {
   double _sliderValue = 0; //Slider value 0 by default
   double _setpressure = 0; //Pressure sent to boot starts 0 by default
   double _setrate = 0; //Heartrate value
+  bool keepAlive = true;
 
-  final HistoryStorage caller;
-  _SequenceSelection(this.caller);
+  //final HistoryStorage caller;
+  //_SequenceSelection(this.caller);
   
   @override
   Widget build(BuildContext context) {
@@ -71,7 +72,7 @@ class _SequenceSelection extends State<SequenceSelection> {
                       onChanged: (_bootpressure) {
                         setState(() => _sliderValue = _bootpressure); //updates
                         _setpressure = _bootpressure; //boot pressure was going to be sent to boot after a waiting period
-                        caller.writeFile(_sliderValue);
+                        //caller.writeFile(_sliderValue);
                         //didn't fully implement that at the time because couldn't figure out how to at the time
                         //bluetooth control to send value should go here
                       },

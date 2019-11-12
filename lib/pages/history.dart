@@ -44,14 +44,13 @@ class HistoryStorage {
 
 class HistoryPage extends StatefulWidget {
   final HistoryStorage storage;
-
   HistoryPage({Key key, @required this.storage}) : super(key: key);
 
   @override
   _HistoryPage createState() => _HistoryPage();
 }
 
-class _HistoryPage extends State<HistoryPage> {
+class _HistoryPage extends State<HistoryPage> with AutomaticKeepAliveClientMixin<HistoryPage> {
   int _historical;
 
   @override
@@ -74,4 +73,6 @@ class _HistoryPage extends State<HistoryPage> {
       )
     );
   }
+  @override
+  bool get wantKeepAlive => true;
 }
