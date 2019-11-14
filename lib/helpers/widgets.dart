@@ -7,6 +7,7 @@ class ScanResultTile extends StatelessWidget {
   final ScanResult result;
   final VoidCallback onTap;
 
+  // Checks for name of device and returns name if given, otherwise return device ID
   Widget _buildTitle(BuildContext context) {
     if (result.device.name.length > 0) {
       return Column(
@@ -83,6 +84,7 @@ class ScanResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Shows device itself and builds listing for device
     return ExpansionTile(
       title: _buildTitle(context),
       leading: Text(result.rssi.toString()),

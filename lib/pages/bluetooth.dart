@@ -103,6 +103,7 @@ class FindDevicesScreen extends StatelessWidget {
                       .toList(),
                 ),
               ),
+              // Builds list of items
               StreamBuilder<List<ScanResult>>(
                 stream: FlutterBlue.instance.scanResults,
                 initialData: [],
@@ -125,8 +126,8 @@ class FindDevicesScreen extends StatelessWidget {
           ),
         ),
       ),
+      // Scan button
       floatingActionButton: StreamBuilder<bool>(
-        //When you push scan button
         stream: FlutterBlue.instance.isScanning,
         initialData: false,
         builder: (c, snapshot) {
