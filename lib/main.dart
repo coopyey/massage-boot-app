@@ -16,7 +16,7 @@ class CircuAir extends StatelessWidget {
           title: TextStyle(color: Colors.black),
         ),
       ),
-      home: MainPage()
+      home: MainPage(storage: HistoryStorage(),)
     );
   }
 }

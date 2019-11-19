@@ -41,7 +41,6 @@ class HistoryStorage {
       return 0;
     }
   }
-
   Future<File> writeFile(int val) async {
     final file = await _localFile;
 
@@ -49,6 +48,7 @@ class HistoryStorage {
     return file.writeAsString('$val');
   }
 }
+
 
 class _MainPage extends State<MainPage> {
   BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
@@ -82,10 +82,6 @@ class _MainPage extends State<MainPage> {
         }
       });
     });
-
-    Future<File> _updateFile(int val) {
-      return widget.storage.writeFile(val);
-    }
     
     // Get current state
     FlutterBluetoothSerial.instance.state.then((state) {
@@ -121,6 +117,10 @@ class _MainPage extends State<MainPage> {
       });
     });
   }
+
+  Future<File> _updateFile(int val) {
+    return widget.storage.writeFile(val);
+  } 
 
   @override
   void dispose() {
