@@ -188,7 +188,7 @@ class _MainPage extends State<MainPage> {
                               setState(() {
                                 _sequence = value;
                                 _setpressure = value.index;
-                                //_updateFile(value.index);
+                                _updateFile(value.index);
                                 //bluetooth control to send on signal should go here
                               }); 
                             }, 
@@ -207,7 +207,7 @@ class _MainPage extends State<MainPage> {
                               setState(() {
                                 _sequence = value;
                                 _setpressure = value.index;
-                                //_updateFile(value.index);
+                                _updateFile(value.index);
                                 //bluetooth control to send on signal should go here
                               }); 
                             },
@@ -222,7 +222,7 @@ class _MainPage extends State<MainPage> {
                               setState(() {
                                 _sequence = value;
                                 _setpressure = value.index;
-                                //_updateFile(value.index);
+                                _updateFile(value.index);
                                 //bluetooth control to send on signal should go here
                               }); 
                             }, 
