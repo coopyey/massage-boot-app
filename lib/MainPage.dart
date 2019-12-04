@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import './DiscoveryPage.dart';
 
@@ -50,12 +51,24 @@ class HistoryStorage {                  // For persistent logs
   }
 }
 
+// Needed for receiving messages - 
+class _Message {
+  int whom;
+  String text;
+
+  _Message(this.whom, this.text);
+}
 
 class _MainPage extends State<MainPage> {
   BluetoothState _bluetoothState = BluetoothState.UNKNOWN;            // Initialize btState
 
   String _address = "...";
   String _name = "...";
+
+  String lastMessage = "Nothing yet!";
+  double pressure1 = 0;
+  double pressure2 = 0;
+  double pressure3 = 0;
 
   Sequencing _sequence = Sequencing.off; //Starts off by default
   Sequencing _historical; //Data loaded from file
@@ -124,6 +137,9 @@ class _MainPage extends State<MainPage> {
     return widget.storage.writeFile(val);
   } 
 
+  BluetoothConnection connection;
+  bool get isConnected => connection != null && connection.isConnected;
+
   @override
   void dispose() {
     FlutterBluetoothSerial.instance.setPairingRequestHandler(null);
@@ -131,8 +147,10 @@ class _MainPage extends State<MainPage> {
     super.dispose();
   }
 
-  BluetoothConnection connection;
-  bool get isConnected => connection != null && connection.isConnected;
+  // List of messages - we want to keep a buffer so we dont lose messages if they show up quickly
+  List<_Message> messages = List<_Message>();
+  String _messageBuffer = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -153,8 +171,9 @@ class _MainPage extends State<MainPage> {
 
                   if (selectedDevice != null) {
                     print('Discovery -> selected ' + selectedDevice.address);
-                    BluetoothConnection.toAddress(selectedDevice.address).then((_connection) {      // Attaches 'connection' to the actual device...i think.
+                    BluetoothConnection.toAddress(selectedDevice.address).then((_connection) {      // Attaches 'connection' to the actual device...i think?
                       connection = _connection;                                                     // Doesnt matter, sending data at least.
+                      connection.input.listen(_onDataReceived);
                     });
                   }
                   else {
@@ -247,10 +266,20 @@ class _MainPage extends State<MainPage> {
                     new Row(
                       children: <Widget>[
                         new Flexible(
-                          child: Text('Current Pressure:    $_setpressure\nCurrent Heart Rate:   ${_setrate.toInt()}'),
+                          child: Text('Recieved: $lastMessage\nCurrent Pressure:    $_setpressure\nCurrent Heart Rate:   ${_setrate.toInt()}'),
                         ),
                       ],
                     ),
+                    // Adding this more for debugging than anything, totally fine with it being removed - Kevin
+                    const Text('\n\nPressure Sensor Data\n', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                    new Row(
+                      children: <Widget>[
+                        new Flexible(
+                          child: Text('Pressure1: $pressure1\nPressure2: $pressure2\nPressure3: $pressure3')
+                        )
+                      ],
+                    ),
+                    // End part Kevin added
                   ],
                 ),
               ),
@@ -259,5 +288,65 @@ class _MainPage extends State<MainPage> {
         ),
       ),
     );
+  }
+
+
+  void _onDataReceived(Uint8List data) {
+    // Allocate buffer for parsed data
+    int backspacesCounter = 0;
+    data.forEach((byte) {           // If ASCII [BS] or [DEL]
+      if (byte == 8 || byte == 127) { 
+        backspacesCounter++;
+      }
+    });
+    Uint8List buffer = Uint8List(data.length - backspacesCounter);
+    int bufferIndex = buffer.length;
+
+    // Apply backspace control character
+    backspacesCounter = 0;
+    for (int i = data.length - 1; i >= 0; i--) {
+      if (data[i] == 8 || data[i] == 127) {
+        backspacesCounter++;
+      }
+      else {
+        if (backspacesCounter > 0) {
+          backspacesCounter--;
+        }
+        else {
+          buffer[--bufferIndex] = data[i];
+        }
+      }
+    }
+
+    // Create message if there is new line character
+    String dataString = String.fromCharCodes(buffer);
+    int index = buffer.indexOf(13);
+    if (~index != 0) { // \r\n
+      setState(() {
+        
+        String newMessage = dataString.substring(0, index);
+        if (newMessage.length != 0) {
+          lastMessage = newMessage;
+
+          List<String> splitMessage = newMessage.split("*");
+          print(splitMessage[0] + splitMessage[1]);
+
+          if (splitMessage[0] == "pres1"){
+            pressure1 = double.parse(splitMessage[1]);
+          }
+          if (splitMessage[0] == "pres2"){
+            pressure2 = double.parse(splitMessage[1]);
+          }
+          if (splitMessage[0] == "pres3"){
+            pressure3 = double.parse(splitMessage[1]);
+          }
+
+          
+          connection.output.add(utf8.encode("0"));
+        }
+        
+        print(newMessage.length.toString() + " Received: " + newMessage);
+      });
+    }
   }
 }
