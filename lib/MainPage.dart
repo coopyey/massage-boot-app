@@ -9,7 +9,7 @@ import 'dart:typed_data';
 
 import './DiscoveryPage.dart';
 
-enum Sequencing {off, low, medium, high}  // Enumerator for sequence/state
+enum Sequencing {off, low, medium, high, stop}  // Enumerator for sequence/state
 
 class MainPage extends StatefulWidget {
   final HistoryStorage storage;
@@ -149,9 +149,6 @@ class _MainPage extends State<MainPage> {
 
   // List of messages - we want to keep a buffer so we dont lose messages if they show up quickly
   List<_Message> messages = List<_Message>();
-  String _messageBuffer = '';
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -261,6 +258,25 @@ class _MainPage extends State<MainPage> {
                         ), // High
                       ],
                     ),
+                      new Row(
+                      children: <Widget>[
+                            new Flexible(
+                            child: new RadioListTile<Sequencing> (
+                            title: const Text('Stop'),
+                            value: Sequencing.stop,
+                            groupValue: _sequence,
+                            onChanged: (Sequencing value) {
+                              setState(() {
+                                _sequence = value;
+                                _setpressure = 0;
+                                //bluetooth control to send on signal should go here
+                                connection.output.add(utf8.encode("off\r\n"));
+                              }); 
+                            },
+                          ),
+                        ), // Medium // High
+                      ],
+                    ),
                     //BLOCK FOR THE PRESSURE READOUT --------------------------------------------------------
                     const Text('\n\nCurrrent Statistics\n', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                     new Row(
@@ -340,9 +356,6 @@ class _MainPage extends State<MainPage> {
           if (splitMessage[0] == "pres3"){
             pressure3 = double.parse(splitMessage[1]);
           }
-
-          
-          connection.output.add(utf8.encode("0"));
         }
         
         print(newMessage.length.toString() + " Received: " + newMessage);
