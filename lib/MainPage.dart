@@ -9,7 +9,7 @@ import 'dart:typed_data';
 
 import './DiscoveryPage.dart';
 
-enum Sequencing {off, low, medium, high, stop}  // Enumerator for sequence/state
+enum Sequencing {off, sequence1, sequence2 , sequence3, stop}  // Enumerator for sequence/state
 
 class MainPage extends StatefulWidget {
   final HistoryStorage storage;
@@ -51,13 +51,6 @@ class HistoryStorage {                  // For persistent logs
   }
 }
 
-// Needed for receiving messages - 
-class _Message {
-  int whom;
-  String text;
-
-  _Message(this.whom, this.text);
-}
 
 class _MainPage extends State<MainPage> {
   BluetoothState _bluetoothState = BluetoothState.UNKNOWN;            // Initialize btState
@@ -69,6 +62,9 @@ class _MainPage extends State<MainPage> {
   double pressure1 = 0;
   double pressure2 = 0;
   double pressure3 = 0;
+  int pStateI = 0;
+  List<String> pStateL = ["Off", "Low", "Normal", "High"];
+  int pulse = 0;
 
   Sequencing _sequence = Sequencing.off; //Starts off by default
   Sequencing _historical; //Data loaded from file
@@ -76,23 +72,23 @@ class _MainPage extends State<MainPage> {
   int _bootpressure = 0; //Pressure readout starts                      (To later implement custom
   int _setpressure = 0; //Pressure sent to boot starts 0 by default       pressure levels I assume)
 
-  Timer _discoverableTimeoutTimer;                    // Come back to this, idk what it is
+  Timer _discoverableTimeoutTimer;                    // What is this?
   int _discoverableTimeoutSecondsLeft = 0;
 
   @override
   void initState() {
     super.initState();
 
-    widget.storage.readFile().then((int value) {      // Load custom default or historical pressure setting from file
+    widget.storage.readFile().then((int value) {      // Load default or historical pressure setting from file
       setState(() {
         if (value == 0) {
           _historical = Sequencing.off;
         } else if (value == 1) {
-          _historical = Sequencing.low;
+          _historical = Sequencing.sequence1;
         } else if (value == 2) {
-          _historical = Sequencing.medium;
+          _historical = Sequencing.sequence2;
         } else if (value == 3) {
-          _historical = Sequencing.high;
+          _historical = Sequencing.sequence3;
         }
       });
     });
@@ -140,6 +136,7 @@ class _MainPage extends State<MainPage> {
   BluetoothConnection connection;
   bool get isConnected => connection != null && connection.isConnected;
 
+
   @override
   void dispose() {
     FlutterBluetoothSerial.instance.setPairingRequestHandler(null);
@@ -147,8 +144,7 @@ class _MainPage extends State<MainPage> {
     super.dispose();
   }
 
-  // List of messages - we want to keep a buffer so we dont lose messages if they show up quickly
-  List<_Message> messages = List<_Message>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,7 +183,7 @@ class _MainPage extends State<MainPage> {
                   children: <Widget>[ 
                     // BLOCK FOR CONTROLLING PRESSURE ---------------------------------------------------
                     const Text('Power', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                    new Text('Previous run used ${_historical.toString().substring(_historical.toString().indexOf('.')+1)} setting.\n'),
+                    new Text('Previous run used ${_historical.toString().substring(_historical.toString().indexOf('.')+1)}.\n'),
                     new Row( 
                       children: <Widget>[
                         new Flexible(
@@ -206,8 +202,8 @@ class _MainPage extends State<MainPage> {
                         ),
                         new Flexible(
                             child: new RadioListTile<Sequencing> (
-                            title: const Text('Low'),
-                            value: Sequencing.low,
+                            title: const Text('Sequence 1'),
+                            value: Sequencing.sequence1,
                             groupValue: _sequence,
                             onChanged: (Sequencing value) {
                               setState(() {
@@ -226,8 +222,8 @@ class _MainPage extends State<MainPage> {
                       children: <Widget>[
                             new Flexible(
                             child: new RadioListTile<Sequencing> (
-                            title: const Text('Medium'),
-                            value: Sequencing.medium,
+                            title: const Text('Sequence 2'),
+                            value: Sequencing.sequence2,
                             groupValue: _sequence,
                             onChanged: (Sequencing value) {
                               setState(() {
@@ -242,8 +238,8 @@ class _MainPage extends State<MainPage> {
                         ), // Medium
                         new Flexible(
                             child: new RadioListTile<Sequencing> (
-                            title: const Text('High'),
-                            value: Sequencing.high,
+                            title: const Text('Sequence 3'),
+                            value: Sequencing.sequence3,
                             groupValue: _sequence,
                             onChanged: (Sequencing value) {
                               setState(() {
@@ -278,21 +274,25 @@ class _MainPage extends State<MainPage> {
                       ],
                     ),
                     //BLOCK FOR THE PRESSURE READOUT --------------------------------------------------------
-                    const Text('\n\nCurrrent Statistics\n', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                    const Text('\nCurrrent Statistics\n', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                     new Row(
                       children: <Widget>[
                         new Flexible(
-                          child: Text('Recieved: $lastMessage\nCurrent Pressure:    $_setpressure\nCurrent Heart Rate:   ${_setrate.toInt()}'),
+                          child: Text('Current Pressure:    $_setpressure\nCurrent Heart Rate:   ${_setrate.toInt()}'),
                         ),
                       ],
                     ),
                     // Adding this more for debugging than anything, totally fine with it being removed - Kevin
-                    const Text('\n\nPressure Sensor Data\n', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                    const Text('\nPressure Sensor Data\n', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
                     new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         new Flexible(
-                          child: Text('Pressure1: $pressure1\nPressure2: $pressure2\nPressure3: $pressure3')
-                        )
+                          child: Text('Pressure1: $pressure1\nPressure2: $pressure2\nPressure3: $pressure3'),
+                        ),
+                        new Flexible(
+                          child: Text('Pressure\nState:\n${pStateL[pStateI]}'),
+                        ),
                       ],
                     ),
                     // End part Kevin added
@@ -345,16 +345,22 @@ class _MainPage extends State<MainPage> {
           lastMessage = newMessage;
 
           List<String> splitMessage = newMessage.split("*");
-          print(splitMessage[0] + splitMessage[1]);
+          print(splitMessage[0] + " " + splitMessage[1]);
 
-          if (splitMessage[0] == "pres1"){
+          if      (splitMessage[0] == "pres1"){
             pressure1 = double.parse(splitMessage[1]);
           }
-          if (splitMessage[0] == "pres2"){
+          else if (splitMessage[0] == "pres2"){
             pressure2 = double.parse(splitMessage[1]);
           }
-          if (splitMessage[0] == "pres3"){
+          else if (splitMessage[0] == "pres3"){
             pressure3 = double.parse(splitMessage[1]);
+          }
+          else if (splitMessage[0] == "pState"){
+            pStateI = double.parse(splitMessage[1]).toInt();
+          }
+          else if (splitMessage[0] == "pulse"){
+            pulse = double.parse(splitMessage[1]).toInt();
           }
         }
         
